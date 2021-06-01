@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+import bdb # 내가 만든 데이터베이스 함수들
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -9,9 +11,18 @@ def index():
 def hello():
     return render_template("main.html")
 
-@app.route('/signin')
+@app.route('/signin', methods=['GET', 'POST'])
 def signin():
-    return render_template("signin.html")
+    if request.method == 'GET':
+        return render_template("signin.html")
+    else:
+        # 여기 POST로 들어오는 데이터를 받아보자
+        email = request.form['email']
+        pwd = request.form['pwd']
+        print("전달된값:", email, pwd)
+        # 전달된 값을 그대로 db에 저장
+        bdb.insert_data(email, pwd)
+        return '회원가입 데이터(POST)'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
